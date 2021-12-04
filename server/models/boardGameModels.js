@@ -1,4 +1,5 @@
-import { Pool } from 'pg';
+import postgres from 'pg';
+const { Pool } = postgres;
 
 
 const PG_URI = `postgres://pukrkzqc:e_TeFYvSC7eGaUJ7wTYCq5vQftlxFDA2@kashin.db.elephantsql.com/pukrkzqc`
