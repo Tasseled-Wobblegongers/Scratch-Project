@@ -8,24 +8,6 @@ module.exports = {
     filename: 'bundle.js',
   },
   mode: 'development',
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, './client/index.html'),
-    }),
-  ],
-  devServer: {
-    compress: true,
-    port: 8080,
-    hot: true,
-    proxy: {
-      '/': 'http://localhost:3000',
-      secure: true,
-    },
-    static: {
-      directory: path.join(__dirname, '/'),
-      publicPath: '/',
-    },
-  },
   module: {
     rules: [
       {
@@ -43,5 +25,23 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
     ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, './client/index.html'),
+    }),
+  ],
+  devServer: {
+    compress: true,
+    port: 8080,
+    hot: true,
+    // proxy: {
+    //   '/': 'http://localhost:3000',
+    //   secure: true,
+    // },
+    static: {
+      directory: path.join(__dirname, '/'),
+      publicPath: '/',
+    },
   },
 };
