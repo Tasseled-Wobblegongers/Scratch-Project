@@ -21,7 +21,7 @@ app.use((req, res) => res.status(404).send('Endpoint could not be found'));
 // default error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
-    log: 'A default server error occurred',
+    log: 'A default server error occurred' + err,
     status: 500,
     message: { err: 'Sorry guys, an error occurred' },
   };

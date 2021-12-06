@@ -61,6 +61,29 @@ eventController.getEvents = (req, res, next) => {
   // return next();
 }
 
+eventController.getEventComments = (req, res, next) => {
+  const sql = `SELECT * FROM comments WHERE event_id = ${req.params.event_id}`;
+  db.query(sql)
+    .then((data) => {
+      const comments = [];
+      data.rows.forEach((datum) => {
+        comments.push({
+          username: datum.username,
+          body: datum.body,
+          timestamp: datum.timestamp,
+          comment_id: datum._id,
+        })
+      });
+      res.locals.comments = comments;
+      
+      return next();
+    })
+    .catch((err) => {
+      console.log("ERROR: Cannot find comments from the database", err);
+      return next(err);
+    })
+}
+
 eventController.findGame = (req, res, next) => {
   const sql = `SELECT * FROM games WHERE name~*'${req.body.game}'`;
 
@@ -140,46 +163,27 @@ eventController.addEvent = (req, res, next) => {
     });
 }
 
+eventController.addComment = (req, res, next) => {
+  const sql = `INSERT INTO comments (username, body, event_id, time)
+              VALUES ($1, $2, $3, $4)`;
+  const params = [req.body.username, req.body.body, req.params.event_id, 'now'];
+  console.log(req.params);
+  db.query(sql, params)
+    .then((data) => {
+      return next();
+    })
+    .catch((err) => {
+      console.log("ERROR: Something went wrong adding comment to database", err);
+      return next(err);
+    });
+}
+
+
 
 export default eventController;
 
-/*
-<-- ADD EVENT -->
-req: {
-  body: { 
-    game: "catan"
-    event time: "8:00"
-    event date: "01/11/22"
-    username: "guy fieri"
-    location: "flavortown"
-}}
-'ideal POST request to events/new'
-body: {
-  game: 'game name, or something close to it'
-  name: 'event name',
-  host: 'host name',
-  time: 'event time',
-  location: 'event location',
-}
+/* <-- ~~**~~**~~**~~** SCRATCHPAD **~~**~~**~~**~~**~~ -->
 
-res: {
-  locals: {
-     game: {
-                 _id: 43
-               name: 'Catan"
-               image: dfadfsdf.jpg
-               playerCount: 26
-               gameTime: 4
-}
-               event: {
-                _id: 5
-                  time: "8:00"
-                  date: "01/11/22"
-                   host: "guy fieri"
-                    location: "flavortown"
-                   game_id: 43 
-   }              
-}
-}
+
 */ 
 
