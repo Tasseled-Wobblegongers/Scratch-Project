@@ -1,29 +1,57 @@
 body {
-  background-color: #ffffff;
+  background-color: #f9f8f2;
   font-family: system-ui;
   font-size: 16px;
-  display: flex;
-  width: 80%;
+  max-width: 1400px;
   margin: auto;
+  align-content: center;
+  justify-content: center;  
 }
 div.root {
-  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
-div.allEvents {
-  display: flex;
+div.titlebar {
+  display: grid;
+  justify-content: center;
   align-items: center;
 }
+div.allEvents {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+}
 div.eventCard {
-  background-color: rgb(245, 245, 245);
+  background-color: rgb(255, 255, 255);
+  border-radius: 12px;
+  padding: 15px;
+  letter-spacing: 1px;
+  margin: 15px;
+  max-height: 700px;
+  max-width: 400px;
+  box-shadow: var(--shadow-elevation-medium);
+
+}
+div.messageBox {
+  background-color: rgb(242, 242, 242);
   border-radius: 6px;
   padding: 5px 15px;
   letter-spacing: 1px;
   margin: 15px;
+  height: 300px;
   box-shadow: var(--shadow-elevation-medium);
+  overflow-y: hidden;
 }
 input {
   width: 20%;
+  padding: 12px 20px !important;
+  margin: 8px 8px;
+  box-sizing: border-box;
+}
+input.newMessage {
+  width: 100%;
   padding: 12px 20px !important;
   margin: 8px 8px;
   box-sizing: border-box;
@@ -45,6 +73,18 @@ button:hover {
   border: 0.5px solid #3780ce;
   transition-duration: 0.5s;
   box-shadow: var(--shadow-elevation-high);
+}
+li {
+  list-style-type: none;
+  margin-left: -30px;
+}
+li.comments {
+  list-style-type: none;
+  margin-left: 0px;
+}
+ul {
+  list-style-type: none;
+  margin-left: -30px;
 }
 :root {
   --shadow-color: 0deg 0% 0%;

@@ -12,81 +12,14 @@ const App = () => {
   // const [eventInfo, setEvent] = useState([]);
   // const [messages, setMessages] = useState([]);
 
-  const exampleGame = [
-    {
-      event: {
-        _id: 5,
-        host: 'Guy Fieri',
-        location: 'Flavortown',
-        time: '8:00',
-        date: '12/04/2021',
-        game_id: 43,
-      },
-      game: {
-        _id: 43,
-        name: 'Catan',
-        image: 'dfadfsdf.jpg',
-        playerCount: 26,
-        gameTime: 4,
-      },
-      comments: [
-        {
-          username: 'guy OIJOFIEJFOIJEFF',
-          body: "Let's go down to flavortown!",
-          timestamp: '2021-12-04 04:04:34 +0000',
-          comment_id: 1,
-        },
-        {
-          username: 'guy EEOFEOIFJEOIJFOIJ',
-          body: 'Diners, Driveins, and Dives!',
-          timestamp: '2021-12-04 04:04:34 +0000',
-          comment_id: 2,
-        },
-      ],
-    },
-    {
-      event: {
-        _id: 5,
-        host: 'Guy Fieri',
-        location: 'Flavortown',
-        time: '8:00',
-        date: '12/04/2021',
-        game_id: 34,
-      },
-      game: {
-        _id: 34,
-        name: 'TWO',
-        image: 'dfadfsdf.jpg',
-        playerCount: 26,
-        gameTime: 4,
-      },
-      comments: [
-        {
-          username: 'guy fieri',
-          body: "Let's go down to flavortown!",
-          timestamp: '2021-12-04 04:04:34 +0000',
-          comment_id: 1,
-        },
-        {
-          username: 'guy fieri',
-          body: 'Diners, Driveins, and Dives!',
-          timestamp: '2021-12-04 04:04:34 +0000',
-          comment_id: 2,
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
     axios
-      .get('/events/all')
+      .get('http://localhost:3000/events/all')
       .then((res) => {
-        console.log(res);
-      })
-      .then((res) => {
-        setListOfGames(res.data);
+        console.log(res.data.events);
+        setListOfGames(res.data.events);
       });
-  });
+  }, []);
 
   const handleSearchGame = (newGame) => {
     axios({ method: 'POST', url: '/events/new', body: newGame })
@@ -95,6 +28,7 @@ const App = () => {
         setListOfGames(res.data);
       });
   };
+
 
   const handleAddComment = (id, commentObj) => {
     axios({ method: 'POST', url: `/events/${id}/comments`, body: commentObj })
@@ -164,7 +98,7 @@ const App = () => {
       </div>
       {/* Container for all Game Cards */}
       <div className='eventsContainer'>
-        <Events allEvents={exampleGame} commentReload={handleAddComment} />
+        <Events allEvents={allGames} commentReload={handleAddComment} />
       </div>
     </>
   );

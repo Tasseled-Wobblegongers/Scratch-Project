@@ -4,7 +4,7 @@ import eventsController from '../controllers/eventsControllers.js';
 
 // all requests are prefixed by /api...
 
-router.get('/all', 
+router.get('/all',
   eventsController.getEvents,
   (req, res) => res.status(200).json(res.locals)
 )
