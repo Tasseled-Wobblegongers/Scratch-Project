@@ -62,11 +62,10 @@ eventController.getEvents = (req, res, next) => {
 }
 
 eventController.findGame = (req, res, next) => {
-  console.log('####### Finding game on line 63 of events controller! ######')
-  const params = [`'${req.body.game}'`];
   const sql = `SELECT * FROM games WHERE name~*'${req.body.game}'`;
 
   db.query(sql)
+    // first, check if game exists in database. if so, return game info
     .then((data) => {
       if (data.rows.length) {
         res.locals.game = data.rows[0];
@@ -74,6 +73,7 @@ eventController.findGame = (req, res, next) => {
         return next();
       }
       else {
+        // if not, find game information from the Board Game Atlas api
         console.log('####### fetching from api... #######')
         axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&client_id=4bmYMEDgHW`)
         .then((data) => {
@@ -87,6 +87,7 @@ eventController.findGame = (req, res, next) => {
           }
         })
         .then((data) => {
+          // then log the data into the games dartabase and add database id for game to response info
           const params = [res.locals.game.name, res.locals.game.image, res.locals.game.playerCount, res.locals.game.gameTime];
           const postSql = `INSERT INTO games (name, image, player_count, play_time)
           VALUES ($1, $2, $3, $4)
