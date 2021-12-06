@@ -6,11 +6,11 @@ const Message = (props) => {
       {props.gameInfo.map((comment, key) => {
         return (
           <>
-            <h4 key={key}>
-              {comment.username}
-              {comment.timestamp}
-              {comment.body}
-            </h4>
+            <ul key={key}>
+              <li className='comments'><b>user: </b>{comment.username}</li>
+              <li className='comments'><b>time: </b>{comment.time}</li>
+              <li className='comments'><b>comment: </b>{comment.body}</li>
+            </ul>
           </>
         );
       })}
