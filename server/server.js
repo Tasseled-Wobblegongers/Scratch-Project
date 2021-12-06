@@ -1,6 +1,7 @@
 import express from 'express';
 // import Path from 'path';
 import eventsRouter from './routes/events.js'
+import cors from 'cors';
 
 const PORT = 3000;
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // define the route handlers
 app.use('/events', eventsRouter);
