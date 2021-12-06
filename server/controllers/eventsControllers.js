@@ -16,7 +16,7 @@ eventController.getEvents = (req, res, next) => {
   db.query(sql)
   .then ((data) => {
     res.locals.events = []
-    console.log(data)
+    // console.log(data)
     const tempObj = {};
     data.rows.forEach((datum) => {
       // if the event details haven't been recorded in tempObj, add a new event object with game details and empty comments array
@@ -75,10 +75,12 @@ eventController.findGame = (req, res, next) => {
       else {
         // if not, find game information from the Board Game Atlas api
         console.log('####### fetching from api... #######')
-        axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&client_id=4bmYMEDgHW`)
+        axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&order_by=rank&client_id=4bmYMEDgHW`)
         .then((data) => {
           console.log(data.data.games[0]);
-          const game = data.data.games[0];
+          let game = data.data.games[0];
+          // if game has extremely high placeholder rank, it's probably not the game we're looking for. choose next one
+          if (data.data.games.length > 1 && game.rank > 100000) game = data.data.games[1];
           res.locals.game = {
             name: game.name,
             image: game.image_url,
