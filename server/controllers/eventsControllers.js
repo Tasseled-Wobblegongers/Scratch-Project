@@ -16,7 +16,7 @@ eventController.getEvents = (req, res, next) => {
   db.query(sql)
   .then ((data) => {
     res.locals.events = []
-    console.log(data)
+    // console.log(data)
     const tempObj = {};
     data.rows.forEach((datum) => {
       // if the event details haven't been recorded in tempObj, add a new event object with game details and empty comments array
@@ -61,6 +61,29 @@ eventController.getEvents = (req, res, next) => {
   // return next();
 }
 
+eventController.getEventComments = (req, res, next) => {
+  const sql = `SELECT * FROM comments WHERE event_id = ${req.params.event_id}`;
+  db.query(sql)
+    .then((data) => {
+      const comments = [];
+      data.rows.forEach((datum) => {
+        comments.push({
+          username: datum.username,
+          body: datum.body,
+          timestamp: datum.timestamp,
+          comment_id: datum._id,
+        })
+      });
+      res.locals.comments = comments;
+      
+      return next();
+    })
+    .catch((err) => {
+      console.log("ERROR: Cannot find comments from the database", err);
+      return next(err);
+    })
+}
+
 eventController.findGame = (req, res, next) => {
   const sql = `SELECT * FROM games WHERE name~*'${req.body.game}'`;
 
@@ -75,10 +98,12 @@ eventController.findGame = (req, res, next) => {
       else {
         // if not, find game information from the Board Game Atlas api
         console.log('####### fetching from api... #######')
-        axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&client_id=4bmYMEDgHW`)
+        axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&order_by=rank&client_id=4bmYMEDgHW`)
         .then((data) => {
           console.log(data.data.games[0]);
-          const game = data.data.games[0];
+          let game = data.data.games[0];
+          // if game has extremely high placeholder rank, it's probably not the game we're looking for. choose next one
+          if (data.data.games.length > 1 && game.rank > 100000) game = data.data.games[1];
           res.locals.game = {
             name: game.name,
             image: game.image_url,
@@ -138,46 +163,27 @@ eventController.addEvent = (req, res, next) => {
     });
 }
 
+eventController.addComment = (req, res, next) => {
+  const sql = `INSERT INTO comments (username, body, event_id, time)
+              VALUES ($1, $2, $3, $4)`;
+  const params = [req.body.username, req.body.body, req.params.event_id, 'now'];
+  console.log(req.params);
+  db.query(sql, params)
+    .then((data) => {
+      return next();
+    })
+    .catch((err) => {
+      console.log("ERROR: Something went wrong adding comment to database", err);
+      return next(err);
+    });
+}
+
+
 
 export default eventController;
 
-/*
-<-- ADD EVENT -->
-req: {
-  body: { 
-    game: "catan"
-    event time: "8:00"
-    event date: "01/11/22"
-    username: "guy fieri"
-    location: "flavortown"
-}}
-'ideal POST request to events/new'
-body: {
-  game: 'game name, or something close to it'
-  name: 'event name',
-  host: 'host name',
-  time: 'event time',
-  location: 'event location',
-}
+/* <-- ~~**~~**~~**~~** SCRATCHPAD **~~**~~**~~**~~**~~ -->
 
-res: {
-  locals: {
-     game: {
-                 _id: 43
-               name: 'Catan"
-               image: dfadfsdf.jpg
-               playerCount: 26
-               gameTime: 4
-}
-               event: {
-                _id: 5
-                  time: "8:00"
-                  date: "01/11/22"
-                   host: "guy fieri"
-                    location: "flavortown"
-                   game_id: 43 
-   }              
-}
-}
+
 */ 
 

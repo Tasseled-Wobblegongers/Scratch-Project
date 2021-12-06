@@ -18,17 +18,14 @@ router.post('/new',
     }
 )
 
-/*
-router.get('/memory/:bank/:slot', loadPattern);
-request from front end to 'api/memory/OH/8' 
-request.params. = {bank: 'OH', slot: 8}
-request.body ={ post request stuff here }
-*/
+router.post('/:event_id/comments',
+    eventsController.addComment,
+    eventsController.getEventComments,
+    (req, res) => res.status(200).json(res.locals)
+)
 
+/* <-- ~~**~~**~~**~~** SCRATCHPAD **~~**~~**~~**~~**~~ -->
 
-// router.get('/',
-//   coursesController.getCourses,
-//   (req, res) => res.status(200).json(res.locals.courses)
-// )
+*/ 
 
 export default router;
