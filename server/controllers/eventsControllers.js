@@ -112,35 +112,36 @@ eventController.findGame = (req, res, next) => {
 
 eventController.addEvent = (req, res, next) => {
   // insert row into events table in database with event details from request
+  const sql = `INSERT INTO events (name, host, date, time, location, game_id)
+              VALUES ($1, $2, $3, $4, $5, $6)
+              RETURNING *`;
   // return event details, including db _id, in res.locals
-  return next();
+  const params = ['placeholder_event_name', req.body.host, req.body.date, req.body.time, req.body.location, res.locals.game._id];
+  db.query(sql, params)
+    .then((data) => {
+      console.log(data.rows);
+      const event = data.rows[0];
+      res.locals.event = {
+        name: event.name,
+        time: event.time,
+        date: event.date,
+        host: event.host,
+        location: event.location,
+        game_id: event.game_id,
+        _id: event._id,
+      };
+      return next();
+    })
+    .catch((err) => {
+      console.log("ERROR: Games not found", err);
+      return next(err);
+    });
 }
 
 
 export default eventController;
 
 /*
-<-- FIND GAME -->
-EXPECTED REQUEST AND RESPONSE:
-req:
-  body: { 
-    game: "catan"
-    event time: "8:00"
-    event date: "01/11/22"
-    username: "guy fieri"
-    location: "flavortown"
-}
-res: {
-  locals: 
-           game: {
-                name: 'Catan"
-               image: dfadfsdf.jpg
-               playerCount: 26
-               gameTime: 4
-}
-}
-}
-
 <-- ADD EVENT -->
 req: {
   body: { 
@@ -150,7 +151,14 @@ req: {
     username: "guy fieri"
     location: "flavortown"
 }}
-
+'ideal POST request to events/new'
+body: {
+  game: 'game name, or something close to it'
+  name: 'event name',
+  host: 'host name',
+  time: 'event time',
+  location: 'event location',
+}
 
 res: {
   locals: {
