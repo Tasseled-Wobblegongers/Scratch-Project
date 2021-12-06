@@ -7,9 +7,10 @@ const Game = (props) => {
   return (
     <div className='eventCard'>
       <ol>
-        <li><b>Game:</b> {props.gameInfo.game.name}</li>
-        <li><b>Player Count:</b> {props.gameInfo.game.playerCount}</li>
-        <li><b>Play Time:</b> {props.gameInfo.game.playTime}</li>
+        <li><h2>{props.gameInfo.game.name}</h2></li>
+        <li><img src={props.gameInfo.game.image}/></li>
+        <li><b>Player Count:</b> {props.gameInfo.game.playerCount} people</li>
+        <li><b>Play Time:</b> {props.gameInfo.game.playTime} hours</li>
       </ol>
       <ol>
         <li><b>Host: </b>{props.gameInfo.event.host}</li>

@@ -13,17 +13,6 @@ const Events = (props) => {
           />
         );
       })}
-      <div className='allEvents'>
-      {props.allEvents.map((game, key) => {
-        return (
-          <Cards
-            gameInfo={game}
-            key={key}
-            commentReload={props.commentReload}
-          />
-        );
-      })}
-    </div>
     </div>
     
   );
