@@ -1,4 +1,6 @@
+import axios from 'axios';
 import db from '../models/boardGameModels.js';
+
 
 
 const eventController = {};
@@ -59,21 +61,114 @@ eventController.getEvents = (req, res, next) => {
   // return next();
 }
 
+eventController.findGame = (req, res, next) => {
+  console.log('####### Finding game on line 63 of events controller! ######')
+  const params = [`'${req.body.game}'`];
+  const sql = `SELECT * FROM games WHERE name~*'${req.body.game}'`;
+
+  db.query(sql)
+    .then((data) => {
+      if (data.rows.length) {
+        res.locals.game = data.rows[0];
+        console.log(res.locals.game);
+        return next();
+      }
+      else {
+        console.log('####### fetching from api... #######')
+        axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&client_id=4bmYMEDgHW`)
+        .then((data) => {
+          console.log(data.data.games[0]);
+          const game = data.data.games[0];
+          res.locals.game = {
+            name: game.name,
+            image: game.image_url,
+            playerCount: game.max_players,
+            gameTime: game.max_playtime,
+          }
+        })
+        .then((data) => {
+          const params = [res.locals.game.name, res.locals.game.image, res.locals.game.playerCount, res.locals.game.gameTime];
+          const postSql = `INSERT INTO games (name, image, player_count, play_time)
+          VALUES ($1, $2, $3, $4)
+          RETURNING _id;`;
+          db.query(postSql, params)
+            .then((dbData) => {
+              res.locals.game._id = dbData.rows[0]._id;
+              return next();
+            })
+            .catch((err) => {
+              console.log("ERROR: Database entry went wrong", err);
+              return next(err);
+            })
+        })
+        .catch((err) => {
+          console.log("ERROR: Games not found", err);
+          return next(err);
+        })
+      }
+    })
+}
+
+eventController.addEvent = (req, res, next) => {
+  // insert row into events table in database with event details from request
+  // return event details, including db _id, in res.locals
+  return next();
+}
+
+
 export default eventController;
 
 /*
-res.locals.events = []
+<-- FIND GAME -->
+EXPECTED REQUEST AND RESPONSE:
+req:
+  body: { 
+    game: "catan"
+    event time: "8:00"
+    event date: "01/11/22"
+    username: "guy fieri"
+    location: "flavortown"
+}
+res: {
+  locals: 
+           game: {
+                name: 'Catan"
+               image: dfadfsdf.jpg
+               playerCount: 26
+               gameTime: 4
+}
+}
+}
 
-create an obejct tp store events
-  for each commentObj from db.query
-  if object.event_id doesn't exist, 
-    make one
-    populate with all event detals from that object
-    create property game and fill it with game details from object
-    create property comments set to empty array
-  if the object has comment info
-    push it into an array at object.event_id.comments
+<-- ADD EVENT -->
+req: {
+  body: { 
+    game: "catan"
+    event time: "8:00"
+    event date: "01/11/22"
+    username: "guy fieri"
+    location: "flavortown"
+}}
 
-convert event object to an array of events
+
+res: {
+  locals: {
+     game: {
+                 _id: 43
+               name: 'Catan"
+               image: dfadfsdf.jpg
+               playerCount: 26
+               gameTime: 4
+}
+               event: {
+                _id: 5
+                  time: "8:00"
+                  date: "01/11/22"
+                   host: "guy fieri"
+                    location: "flavortown"
+                   game_id: 43 
+   }              
+}
+}
 */ 
 
