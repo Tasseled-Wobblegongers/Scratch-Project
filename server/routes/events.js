@@ -18,7 +18,6 @@ router.post('/new',
   eventsController.findGame,
   eventsController.addEvent,
     (req, res) => {
-      console.log(res.locals);
       res.status(200).json(res.locals)
     }
 )
@@ -26,7 +25,6 @@ router.post('/new',
 router.post('/:event_id/comments',
     eventsController.addComment,
     eventsController.getEventComments,
-    // eventsController.getEvents,
     (req, res) => res.status(200).json(res.locals)
 )
 

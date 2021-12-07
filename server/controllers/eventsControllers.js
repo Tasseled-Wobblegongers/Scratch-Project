@@ -6,7 +6,6 @@ import db from '../models/boardGameModels.js';
 const eventController = {};
 
 eventController.getEvents = (req, res, next) => {
-  console.log('Made it to event controller, getting events!');
   const sql = 
   `SELECT *, events._id AS event_id, events.name AS event_name, events.time AS event_time, comments.time AS comment_time FROM events
   LEFT OUTER JOIN games ON games._id = events.game_id
@@ -16,7 +15,6 @@ eventController.getEvents = (req, res, next) => {
   db.query(sql)
   .then ((data) => {
     res.locals.events = []
-    // console.log(data)
     const tempObj = {};
     data.rows.forEach((datum) => {
       // if the event details haven't been recorded in tempObj, add a new event object with game details and empty comments array
@@ -50,7 +48,6 @@ eventController.getEvents = (req, res, next) => {
         })
       }
     })
-    // console.log(tempObj)
     // push all properties from tempObj into res.locals.events
     for (let event in tempObj) {
       res.locals.events.push(tempObj[event]);
@@ -92,7 +89,6 @@ eventController.findGame = (req, res, next) => {
     .then((data) => {
       if (data.rows.length) {
         res.locals.game = data.rows[0];
-        // console.log(res.locals.game);
         return next();
       }
       else {
@@ -113,7 +109,7 @@ eventController.findGame = (req, res, next) => {
           }
         })
         .then((data) => {
-          // then log the data into the games dartabase and add database id for game to response info
+          // then log the data into the games database and add database id for game to response info
           const params = [res.locals.game.name, res.locals.game.image, res.locals.game.playerCount, res.locals.game.gameTime];
           const postSql = `INSERT INTO games (name, image, player_count, play_time)
           VALUES ($1, $2, $3, $4)
@@ -145,7 +141,6 @@ eventController.addEvent = (req, res, next) => {
   const params = ['placeholder_event_name', req.body.host, req.body.date, req.body.time, req.body.location, res.locals.game._id];
   db.query(sql, params)
     .then((data) => {
-      console.log(data.rows);
       const event = data.rows[0];
       res.locals.event = {
         name: event.name,
@@ -169,8 +164,6 @@ eventController.addComment = (req, res, next) => {
   const sql = `INSERT INTO comments (username, body, event_id, time)
               VALUES ($1, $2, $3, $4)`;
   const params = [req.body.username, req.body.body, req.params.event_id, 'now'];
-  console.log(req.body);
-  console.log(req.params);
   db.query(sql, params)
     .then((data) => {
       console.log('error in addComments')

@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// define the route handlers
+// route handlers
 app.use('/events', eventsRouter);
 
 // catch-all route handler for any request to unknown endpoints
