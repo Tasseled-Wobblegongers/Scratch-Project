@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const Message = (props) => {
+  
   return (
     <div className='comments'>
       {props.gameInfo.map((comment, key) => {

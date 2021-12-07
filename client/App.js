@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ const App = () => {
   const [allGames, setListOfGames] = useState([]);
   // const [eventInfo, setEvent] = useState([]);
   // const [messages, setMessages] = useState([]);
+
   const onChangeHandler = (event) => {
     setNewEvent((addNewEvent) => ({
       ...addNewEvent,
@@ -39,11 +40,20 @@ const App = () => {
         setListOfGames(previous);
       })
   };
+  
+  const handleDeleteGame = (eventId) => {
+    axios({method: 'DELETE', url: `http://localhost:3000/events/${eventId}` })
+    .then((res) => {
+      setListOfGames(res.data);
+    })
+  }
 
   const handleAddComment = (id, commentObj) => {
-    axios({ method: 'POST', url: `/events/${id}/comments`, body: commentObj })
+    axios({ method: 'POST', url: `http://localhost:3000/events/${id}/comments`, body: commentObj })
       .then((res) => {
-        setListOfGames(res.data);
+        console.log(res);
+        const previous = [...messages, res.data]
+        setListOfGames(previous);
       });
   };
 
@@ -70,7 +80,7 @@ const App = () => {
       </div>
       {/* Container for all Game Cards */}
       <div className='eventsContainer'>
-        <Events allEvents={allGames} commentReload={handleAddComment} />
+        <Events allEvents={allGames} addComments = {setListOfGames} deleteEvent={handleDeleteGame} />
       </div>
     </>
   );

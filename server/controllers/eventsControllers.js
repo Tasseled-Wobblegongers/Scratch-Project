@@ -66,6 +66,7 @@ eventController.getEventComments = (req, res, next) => {
   db.query(sql)
     .then((data) => {
       const comments = [];
+      console.log('error in getEventComments')
       data.rows.forEach((datum) => {
         comments.push({
           username: datum.username,
@@ -169,9 +170,11 @@ eventController.addComment = (req, res, next) => {
   const sql = `INSERT INTO comments (username, body, event_id, time)
               VALUES ($1, $2, $3, $4)`;
   const params = [req.body.username, req.body.body, req.params.event_id, 'now'];
+  console.log(req.body);
   console.log(req.params);
   db.query(sql, params)
     .then((data) => {
+      console.log('error in addComments')
       return next();
     })
     .catch((err) => {
