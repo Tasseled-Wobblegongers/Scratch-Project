@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { render } from 'react-dom';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -7,32 +7,41 @@ import Events from './components/EventContainer.js';
 
 const App = () => {
   /* State management through React Hooks */
-  const [addNewEvent, setNewEvent] = useState();
+  const [addNewEvent, setNewEvent] = useState({
+    game: '',
+    host: '',
+    location: '',
+    date: '',
+    time: ''
+  });
   const [allGames, setListOfGames] = useState([]);
   // const [eventInfo, setEvent] = useState([]);
   // const [messages, setMessages] = useState([]);
-
+  const onChangeHandler = (event) => {
+    setNewEvent((addNewEvent) => ({
+      ...addNewEvent,
+      [event.target.id]: event.target.value
+    }))
+  }
+  
   useEffect(() => {
     axios
       .get('http://localhost:3000/events/all')
       .then((res) => {
-        console.log(res.data.events);
         setListOfGames(res.data.events);
       });
   }, []);
 
   const handleSearchGame = (newGame) => {
-    axios({ method: 'POST', url: '/events/new', body: newGame })
-      .then((res) => console.log(res))
+    axios({ method: 'POST', url: 'http://localhost:3000/events/new', data: newGame })
       .then((res) => {
-        setListOfGames(res.data);
-      });
+        const previous = [...allGames, res.data]
+        setListOfGames(previous);
+      })
   };
-
 
   const handleAddComment = (id, commentObj) => {
     axios({ method: 'POST', url: `/events/${id}/comments`, body: commentObj })
-      .then((res) => console.log(res))
       .then((res) => {
         setListOfGames(res.data);
       });
@@ -43,58 +52,21 @@ const App = () => {
     <>
       <div className='titlebar'>
         <h1>Placeholder Title</h1>
-        <form method='POST' action='/new'>
-          <input
-            className='game'
-            type='text'
-            placeholder={`Search for a game`}
-            onChange={(event) => {
-              console.log('onChange: ', event.target.value);
-              setNewEvent(event.target.value);
-            }}
-          />
-          <input
-            className='eventDate'
-            type='date'
-            onChange={(event) => {
-              console.log('onChange: ', event.target.value);
-              setNewEvent(event.target.value);
-            }}
-          />
-          <input
-            className='eventTime'
-            type='time'
-            onChange={(event) => {
-              console.log('onChange: ', event.target.value);
-              setNewEvent(event.target.value);
-            }}
-          />
-          <input
-            className='username'
-            type='text'
-            placeholder={`Enter a username`}
-            onChange={(event) => {
-              console.log('onChange: ', event.target.value);
-              setNewEvent(event.target.value);
-            }}
-          />
-          <input
-            className='location'
-            type='text'
-            placeholder={`Enter a location`}
-            onChange={(event) => {
-              console.log('onChange: ', event.target.value);
-              setNewEvent(event.target.value);
-            }}
-          />
-
-          <button
+        <form>
+         
+        <input key="name" id="game" onChange={onChangeHandler} value={addNewEvent.game} placeholder='Search for a game'/>
+        <input key="host" id="host" onChange={onChangeHandler} value={addNewEvent.host} placeholder='Enter host name'/>
+        <input key="location" id="location" onChange={onChangeHandler} value={addNewEvent.location} placeholder='Enter location'/>
+        <input key="date" id="date" onChange={onChangeHandler} value={addNewEvent.date} type='date'/>
+        <input key="time" id="time" onChange={onChangeHandler} value={addNewEvent.time} type='time'/>
+   
+        </form>
+        <button
             className='gameSearchButton'
-            onClick={() => handleSearchGame(addNewEvent)}
+            onClick={() => {handleSearchGame(addNewEvent)}}
           >
             Add Event
           </button>
-        </form>
       </div>
       {/* Container for all Game Cards */}
       <div className='eventsContainer'>
