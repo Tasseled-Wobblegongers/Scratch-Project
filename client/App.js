@@ -28,7 +28,11 @@ const App = () => {
     axios
       .get('http://localhost:3000/events/all')
       .then((res) => {
-        setListOfGames(res.data.events);
+        setListOfGames(res.data.events.sort((a, b) => {
+          if (a.event._id < b.event._id) return 1;
+          if (a.event._id > b.event._id) return -1;
+          else return 0;
+        }));
       });
   }, []);
 
@@ -36,7 +40,11 @@ const App = () => {
     axios({ method: 'POST', url: 'http://localhost:3000/events/new', data: newGame })
       .then((res) => {
         const previous = [...allGames, res.data]
-        setListOfGames(previous);
+        setListOfGames(previous.sort((a, b) => {
+          if (a.event._id < b.event._id) return 1;
+          if (a.event._id > b.event._id) return -1;
+          else return 0;
+        }));
       })
   };
 
