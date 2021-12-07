@@ -10,20 +10,19 @@ const Cards = (props) => {
   return (
     <>
       <div className='events'>
-        <button
-          onClick={() => {props.deleteEvent(props.gameInfo.event_id)}}
-        >
-        Delete Event
-        </button>
         <Game
           gameInfo={props.gameInfo}
           organizer='Organizer'
           organizerValue={eventCreator}
           onChangeOrganizer={(organizer) => setOrganizer(organizer)}
           addComments={props.addComments}
-
-
+          // deleteEvent={props.deleteEvent}
         />
+        <button
+          onClick={() => {props.deleteEvent(props.gameInfo.event._id)}}
+        >
+        Delete Event
+        </button>
       </div>
     </>
   );

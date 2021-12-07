@@ -52,8 +52,10 @@ const App = () => {
   const handleDeleteGame = (eventId) => {
     axios({method: 'DELETE', url: `http://localhost:3000/events/${eventId}` })
     .then((res) => {
-      setListOfGames(res.data);
+      // console.log(res.data);
+      setListOfGames(res.data.events);
     })
+    // .then(window.location.reload())
   }
 
   const handleAddComment = (id, commentObj) => {
@@ -69,7 +71,7 @@ const App = () => {
     /* Title and Search Bar Container */
     <>
       <div className='titlebar'>
-        <h1>Placeholder Title</h1>
+        <h1>Bored, games?</h1>
         <form>
          
         <input key="name" id="game" onChange={onChangeHandler} value={addNewEvent.game} placeholder='Search for a game'/>

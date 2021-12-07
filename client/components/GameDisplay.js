@@ -26,7 +26,8 @@ const Game = (props) => {
         console.log(res);
         const previous = {...messages, body: res.data}
         props.addComments(previous);
-      });
+      })
+      .then(window.location.reload());
   };
 
   console.log(props.gameInfo.event._id);
@@ -38,7 +39,7 @@ const Game = (props) => {
         <li><h2>{props.gameInfo.game.name}</h2></li>
         <li><img src={props.gameInfo.game.image}/></li>
         <li><b>Player Count:</b> {props.gameInfo.game.playerCount} people</li>
-        <li><b>Play Time:</b> {props.gameInfo.game.playTime} hours</li>
+        <li><b>Play Time:</b> {props.gameInfo.game.playTime} minutes</li>
       </ol>
       <ol>
         <li><b>Host: </b>{props.gameInfo.event.host}</li>
