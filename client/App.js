@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { render } from 'react-dom';
 import axios from 'axios';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
@@ -17,6 +17,7 @@ const App = () => {
   const [allGames, setListOfGames] = useState([]);
   // const [eventInfo, setEvent] = useState([]);
   // const [messages, setMessages] = useState([]);
+
   const onChangeHandler = (event) => {
     setNewEvent((addNewEvent) => ({
       ...addNewEvent,
@@ -47,11 +48,22 @@ const App = () => {
         }));
       })
   };
+  
+  const handleDeleteGame = (eventId) => {
+    axios({method: 'DELETE', url: `http://localhost:3000/events/${eventId}` })
+    .then((res) => {
+      // console.log(res.data);
+      setListOfGames(res.data.events);
+    })
+    // .then(window.location.reload())
+  }
 
   const handleAddComment = (id, commentObj) => {
-    axios({ method: 'POST', url: `/events/${id}/comments`, body: commentObj })
+    axios({ method: 'POST', url: `http://localhost:3000/events/${id}/comments`, body: commentObj })
       .then((res) => {
-        setListOfGames(res.data);
+        console.log(res);
+        const previous = [...messages, res.data]
+        setListOfGames(previous);
       });
   };
 
@@ -59,7 +71,7 @@ const App = () => {
     /* Title and Search Bar Container */
     <>
       <div className='titlebar'>
-        <h1>Placeholder Title</h1>
+        <h1>Bored, games?</h1>
         <form>
          
         <input key="name" id="game" onChange={onChangeHandler} value={addNewEvent.game} placeholder='Search for a game'/>
@@ -78,7 +90,7 @@ const App = () => {
       </div>
       {/* Container for all Game Cards */}
       <div className='eventsContainer'>
-        <Events allEvents={allGames} commentReload={handleAddComment} />
+        <Events allEvents={allGames} addComments = {setListOfGames} deleteEvent={handleDeleteGame} />
       </div>
     </>
   );
