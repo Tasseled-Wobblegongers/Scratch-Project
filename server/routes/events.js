@@ -9,6 +9,11 @@ router.get('/all',
   (req, res) => res.status(200).json(res.locals)
 )
 
+router.get('/:event_id/comments', 
+  eventsController.getEventComments,
+  (req, res) => res.status(200).json(res.locals)
+)
+
 router.post('/new',
   eventsController.findGame,
   eventsController.addEvent,
@@ -20,6 +25,19 @@ router.post('/new',
 
 router.post('/:event_id/comments',
     eventsController.addComment,
+    eventsController.getEventComments,
+    (req, res) => res.status(200).json(res.locals)
+)
+
+router.delete('/:event_id', 
+    eventsController.deleteEventComment,
+    eventsController.deleteEvent,
+    eventsController.getEvents,
+    (req, res) => res.status(200).json(res.locals)
+)
+
+router.delete('/:event_id/comments/:comment_id', 
+    eventsController.deleteEventComment,
     eventsController.getEventComments,
     (req, res) => res.status(200).json(res.locals)
 )
