@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-import Message from './MessageDisplay.js';
+// import Message from './MessageDisplay.js';
 
 const Game = (props) => {
-  console.log('PROPS INSIDE GAMEDISPLAY', props.gameInfo.comments);
   return (
     <div className='eventCard'>
       <ol>
@@ -18,7 +17,7 @@ const Game = (props) => {
         <li><b>Date:</b> {props.gameInfo.event.date}</li>
         <li><b>Time:</b> {props.gameInfo.event.time}</li>
       </ol>
-      <div className='messageBox'>
+      {/* <div className='messageBox'>
       <Message gameInfo={props.gameInfo.comments} />
       </div>
       <form method='' action='/'>
@@ -37,8 +36,8 @@ const Game = (props) => {
           }}
         />
         <button>Submit</button>
-      </form>
-    </div>
+      </form> */}
+        </div>
   );
 };
 

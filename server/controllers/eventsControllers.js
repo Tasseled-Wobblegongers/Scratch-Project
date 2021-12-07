@@ -16,7 +16,7 @@ eventController.getEvents = (req, res, next) => {
   db.query(sql)
   .then ((data) => {
     res.locals.events = []
-    console.log(data)
+    // console.log(data)
     const tempObj = {};
     data.rows.forEach((datum) => {
       // if the event details haven't been recorded in tempObj, add a new event object with game details and empty comments array
@@ -69,14 +69,16 @@ eventController.findGame = (req, res, next) => {
     .then((data) => {
       if (data.rows.length) {
         res.locals.game = data.rows[0];
-        console.log(res.locals.game);
+        // console.log(res.locals.game);
         return next();
       }
       else {
         // if not, find game information from the Board Game Atlas api
         console.log('####### fetching from api... #######')
+        console.log(req.body)
         axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&client_id=4bmYMEDgHW`)
         .then((data) => {
+          console.log(JSON.stringify(data.data));
           console.log(data.data.games[0]);
           const game = data.data.games[0];
           res.locals.game = {
@@ -130,6 +132,7 @@ eventController.addEvent = (req, res, next) => {
         game_id: event.game_id,
         _id: event._id,
       };
+      res.locals.comments = [];
       return next();
     })
     .catch((err) => {

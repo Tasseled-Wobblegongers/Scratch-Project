@@ -22,6 +22,7 @@ div.allEvents {
   justify-content: center;
   align-items: center;
   max-width: 1200px;
+  margin: auto;
 }
 div.eventCard {
   background-color: rgb(255, 255, 255);
@@ -29,7 +30,7 @@ div.eventCard {
   padding: 15px;
   letter-spacing: 1px;
   margin: 15px;
-  max-height: 1000px;
+  max-height: 1200px;
   max-width: 400px;
   box-shadow: var(--shadow-elevation-medium);
 
@@ -46,7 +47,8 @@ div.messageBox {
 }
 img {
   padding: 5px;
-  width: 250px;
+  width: 150px;
+  height: auto;
   align-items: center;
 }
 input {
