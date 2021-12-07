@@ -75,7 +75,6 @@ eventController.getEventComments = (req, res, next) => {
         })
       });
       res.locals.comments = comments;
-      
       return next();
     })
     .catch((err) => {
@@ -180,6 +179,38 @@ eventController.addComment = (req, res, next) => {
     });
 }
 
+eventController.deleteEvent = (req, res, next) => {
+  const sql = `DELETE FROM events WHERE _id=$1`
+  const sqlParams = [req.params.event_id]
+  db.query(sql, sqlParams)
+    .then((data) => next())
+    .catch((err) => {
+      console.log("ERROR: Something went wrong deleting an event from the database", err);
+      return next(err);
+    });
+}
+
+eventController.deleteEventComment = (req, res, next) => {
+  if (req.params.comment_id) {
+    const sql = `DELETE FROM comments WHERE _id=$1`;
+    const sqlParams = [req.params.comment_id];
+    db.query(sql, sqlParams)
+      .then((data) => next())
+      .catch((err) => {
+        console.log("ERROR: Something went wrong deleting a comment from the database", err);
+        return next(err);
+      });
+  } else {
+    const sql = `DELETE FROM comments WHERE event_id=$1`;
+    const sqlParams = [req.params.event_id];
+    db.query(sql, sqlParams)
+    .then((data) => next())
+    .catch((err) => {
+      console.log("ERROR: Something went wrong deleting all comments on an event from the database", err);
+      return next(err);
+    });
+  }
+}
 
 
 export default eventController;
