@@ -91,7 +91,7 @@ eventController.findGame = (req, res, next) => {
     .then((data) => {
       if (data.rows.length) {
         res.locals.game = data.rows[0];
-        console.log(res.locals.game);
+        // console.log(res.locals.game);
         return next();
       }
       else {
@@ -99,6 +99,7 @@ eventController.findGame = (req, res, next) => {
         console.log('####### fetching from api... #######')
         axios.get(`https://api.boardgameatlas.com/api/search?name=${req.body.game}&fuzzy_match=true&order_by=rank&client_id=4bmYMEDgHW`)
         .then((data) => {
+          console.log(JSON.stringify(data.data));
           console.log(data.data.games[0]);
           let game = data.data.games[0];
           // if game has extremely high placeholder rank, it's probably not the game we're looking for. choose next one
